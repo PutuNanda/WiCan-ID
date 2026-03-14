@@ -20,7 +20,7 @@ if [[ -e "$target_dir" ]]; then
 fi
 
 mkdir -p "$target_dir"
-git clone https://github.com/PutuNanda/WiCan-ID.git "$target_dir"
+git clone --depth 1 --single-branch --branch main https://github.com/PutuNanda/WiCan-ID.git "$target_dir"
 
 installer="$target_dir/setup/installer-local.sh"
 if [[ ! -f "$installer" ]]; then
