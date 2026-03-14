@@ -10,6 +10,9 @@ install_user="${SUDO_USER:-}"
 if [[ -z "$install_user" ]]; then
   install_user="$(logname 2>/dev/null || true)"
 fi
+if [[ -z "$install_user" ]]; then
+  install_user="$(awk -F: '$3>=1000 && $1!="nobody"{print $1; exit}' /etc/passwd)"
+fi
 
 if command -v node >/dev/null 2>&1; then
   echo "Node.js detected."
@@ -104,6 +107,9 @@ fi
 
 chmod +x /opt/wican-id/setup/*.sh 2>/dev/null || true
 
+mkdir -p /opt/wican-id/wican-id/service
+mkdir -p /opt/wican-id/wican-id/database
+
 cat >/usr/local/sbin/wican-id <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -157,6 +163,7 @@ fi
 
 systemctl daemon-reload
 systemctl enable --now wican-id.service
+systemctl restart wican-id.service
 
 cat <<'EOF'
 __        _   _____
