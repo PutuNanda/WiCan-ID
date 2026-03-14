@@ -34,16 +34,16 @@ run_clone() {
   fi
 }
 
-if [[ -t 1 ]]; then
+if [[ -w /dev/tty ]]; then
   run_clone &
   clone_pid=$!
   spinner='|/-\'
   i=0
   while kill -0 "$clone_pid" 2>/dev/null; do
-    printf "\r[%c] Cloning..." "${spinner:i++%4:1}"
+    printf "\r[%c] Cloning..." "${spinner:i++%4:1}" > /dev/tty
     sleep 0.2
   done
-  printf "\r"
+  printf "\r" > /dev/tty
   wait "$clone_pid"
 else
   run_clone
