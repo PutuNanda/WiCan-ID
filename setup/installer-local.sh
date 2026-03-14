@@ -36,7 +36,66 @@ else
   fi
 fi
 
-arduino_cli="/opt/wican-id/mcu-tools/arduino-cli/arduino-cli"
+config_file="/opt/wican-id/wican-id/database/server-config/wican-global-config.properties"
+if [[ ! -f "$config_file" ]]; then
+  echo "Config file not found: $config_file" >&2
+  exit 1
+fi
+
+if [[ ! -r /dev/tty ]]; then
+  echo "Interactive input required, but no TTY available." >&2
+  exit 1
+fi
+
+get_prop() {
+  local key="$1"
+  local val
+  val="$(grep -m1 "^${key}=" "$config_file" | cut -d'=' -f2-)"
+  printf "%s" "$val"
+}
+
+set_prop() {
+  local key="$1"
+  local val="$2"
+  if grep -q "^${key}=" "$config_file"; then
+    sed -i "s|^${key}=.*|${key}=${val}|" "$config_file"
+  else
+    echo "${key}=${val}" >> "$config_file"
+  fi
+}
+
+prompt_optional() {
+  local label="$1"
+  local key="$2"
+  local current
+  local input
+  current="$(get_prop "$key")"
+  read -r -p "${label} (default ${current}): " input < /dev/tty
+  if [[ -n "$input" ]]; then
+    set_prop "$key" "$input"
+  fi
+}
+
+prompt_required() {
+  local label="$1"
+  local key="$2"
+  local input=""
+  while [[ -z "$input" ]]; do
+    read -r -p "${label} (required): " input < /dev/tty
+  done
+  set_prop "$key" "$input"
+}
+
+prompt_optional "Server web port" "Server-Web-Port"
+prompt_optional "Server web listen" "Server-Web-Listen"
+prompt_optional "Server node port" "Server-Node-Port"
+prompt_optional "Server node listen" "Server-Node-Listen"
+prompt_required "Server IP" "server-ip"
+prompt_required "Default WiFi SSID" "default-wifi-ssid"
+prompt_required "Default WiFi password" "default-wifi-password"
+prompt_optional "Node port" "node-port"
+
+arduino_cli="/opt/wican-id/wican-id/mcu-tools/arduino-cli/arduino-cli"
 if [[ -f "$arduino_cli" ]]; then
   chmod +x "$arduino_cli"
 else
