@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Jadwal - WiCan Controller</title>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/schedule-settings.css">
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: DESKTOP -->
+    <style id="wic-header-consistency-desktop">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 120 !important;
+            border-radius: 18px !important;
+            width: calc(100% - 24px) !important;
+            margin: 10px auto 0 auto !important;
+        }
+        .logo-container,
+        .brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1,
+        .brand .logo-text h1 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        .logo-text p,
+        .brand .logo-text p {
+            font-size: 0.75rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="js/schedule-settings.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard WiCan Controller</title>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: DESKTOP -->
+    <style id="wic-header-consistency-desktop">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 120 !important;
+            border-radius: 18px !important;
+            width: calc(100% - 24px) !important;
+            margin: 10px auto 0 auto !important;
+        }
+        .logo-container,
+        .brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1,
+        .brand .logo-text h1 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        .logo-text p,
+        .brand .logo-text p {
+            font-size: 0.75rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo" style="background:#111827;border:1px solid rgba(255,255,255,0.35);"><img src="/WiCan-icon.png" alt="WiCan" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+            <div class="logo-text">
+                <h1>WiCan</h1>
+                <p>Monitor & Kontrol Perangkat IoT</p>
+            </div>
+        </div>
+
+        <div class="connection-status">
+            <div class="status-container">
+                <div class="status-indicator connected" id="statusIndicator">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <span id="statusText">Terhubung ke server</span>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn phone" id="mobileBtn" title="Pindah ke Mobile">
+                    <i class="fas fa-mobile-alt"></i>
+                </button>
+                <button class="action-btn add-device" id="addDeviceBtn" title="Tambah Perangkat">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="action-btn refresh" id="refreshBtn" title="Refresh Data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="action-btn settings" id="settingsBtn" title="Pengaturan">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-title">
+            <h2>Perangkat Terhubung</h2>
+            <div class="dashboard-actions">
+                <div class="device-count">
+                    <span id="deviceCount">0</span> Perangkat
+                </div>
+            </div>
+        </div>
+
+        <div class="cards-grid" id="cardsGrid">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <h3>Tidak Ada Perangkat</h3>
+                <p>Belum ada perangkat ESP-01S yang terdeteksi. Perangkat akan muncul secara otomatis setelah terhubung ke server.</p>
+                <button class="btn-primary" id="refreshDataBtn">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="js/index.js"></script>
+</body>
+</html>
+
+

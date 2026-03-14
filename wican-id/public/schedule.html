@@ -1,0 +1,1822 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Jadwal - WiCan Controller</title>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --card-bg: #ffffff;
+            --body-bg: #f5f7fb;
+            --active: #38b000;
+            --inactive: #e63946;
+            --conflict: #f72585;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .device-info {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header h2 i {
+            color: var(--primary);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--success), #2a9d8f);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+
+        .btn-add i {
+            font-size: 1.1rem;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-dark, #5a6268);
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid var(--gray-light);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Cards Grid */
+        .schedules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        /* Schedule Card */
+        .schedule-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-light);
+            animation: fadeIn 0.5s ease;
+            position: relative;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .schedule-card.conflict {
+            border: 2px solid var(--conflict);
+            box-shadow: 0 0 0 2px rgba(247, 37, 133, 0.2);
+        }
+
+        .card-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .schedule-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge.active {
+            background: rgba(56, 176, 0, 0.2);
+            color: #2d6a4f;
+        }
+
+        .status-badge.inactive {
+            background: rgba(230, 57, 70, 0.2);
+            color: var(--inactive);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.active {
+            background: var(--active);
+        }
+
+        .status-dot.inactive {
+            background: var(--inactive);
+        }
+
+        .conflict-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--conflict);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .time-item {
+            text-align: center;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .time-value {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .time-sub {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: var(--gray);
+        }
+
+        .action-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .action-badge.on {
+            background: rgba(56, 176, 0, 0.2);
+            color: #2d6a4f;
+        }
+
+        .action-badge.off {
+            background: rgba(230, 57, 70, 0.2);
+            color: var(--inactive);
+        }
+
+        .action-badge.none {
+            background: rgba(108, 117, 125, 0.2);
+            color: var(--gray);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .day-badge {
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Switch Control */
+        .switch-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .switch-label {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(90deg, var(--active), #2d6a4f);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .edit-btn, .delete-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .edit-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #d1145a;
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--gray-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group label i {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .time-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-select {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .action-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .day-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .day-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: var(--gray-light);
+            border-radius: 6px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            flex: 2;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: var(--gray-light);
+            color: var(--dark);
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: #dae0e5;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1100;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background-color: var(--active);
+        }
+
+        .toast-error {
+            background-color: var(--danger);
+        }
+
+        .toast-info {
+            background-color: var(--primary);
+        }
+
+        .toast-warning {
+            background-color: var(--warning);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .schedules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Conflict Info */
+        .conflict-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(247, 37, 133, 0.1);
+            border-radius: 6px;
+            border-left: 4px solid var(--conflict);
+            font-size: 0.9rem;
+            color: var(--conflict);
+        }
+        /* ====================================
+           DESKTOP HEADER CONSISTENCY OVERRIDE
+           ==================================== */
+        header {
+            background: rgba(67, 97, 238, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo-container {
+            gap: 6px;
+        }
+
+        .logo {
+            width: 34px;
+            height: 34px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 1rem;
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 0.65rem;
+        }
+
+        .device-info {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            font-size: 0.82rem;
+            padding: 6px 12px;
+        }
+
+        .back-btn,
+        .header-action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-action-btn {
+            margin-right: 0;
+        }
+
+        .back-btn:hover,
+        .header-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .page-header,
+        .stat-card,
+        .schedule-card,
+        .modal-content {
+            box-shadow: 0 10px 24px rgba(20, 24, 40, 0.08);
+        }
+    </style>
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: DESKTOP -->
+    <style id="wic-header-consistency-desktop">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 120 !important;
+            border-radius: 18px !important;
+            width: calc(100% - 24px) !important;
+            margin: 10px auto 0 auto !important;
+        }
+        .logo-container,
+        .brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1,
+        .brand .logo-text h1 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        .logo-text p,
+        .brand .logo-text p {
+            font-size: 0.75rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div style="display: flex; align-items: center;">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo-container">
+                <div class="logo" style="background:#111827;border:1px solid rgba(255,255,255,0.35);"><img src="/WiCan-icon.png" alt="WiCan" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+                <div class="logo-text">
+                    <h1>Manajemen Jadwal</h1>
+                    <p>Atur jadwal otomatis perangkat</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <button class="header-action-btn" title="Pengaturan Jadwal" onclick="goToScheduleSettings()">
+                <i class="fas fa-cog"></i>
+            </button>
+            <div class="device-info" id="deviceInfo">
+                <i class="fas fa-microchip"></i> Memuat...
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-clock"></i>
+                Daftar Jadwal
+            </h2>
+            <button class="btn-add" onclick="openAddModal()">
+                <i class="fas fa-plus"></i> Tambah Jadwal Baru
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container" id="statsContainer">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalSchedules">0</h3>
+                    <p>Total Jadwal</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #38b000, #2d6a4f);">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="activeSchedules">0</h3>
+                    <p>Jadwal Aktif</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f72585, #b5179e);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="conflictSchedules">0</h3>
+                    <p>Jadwal Bentrok</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedules Grid -->
+        <div class="schedules-grid" id="schedulesGrid">
+            <!-- Loading State -->
+            <div class="loading-container" id="loadingState">
+                <div class="loading" style="width: 40px; height: 40px;"></div>
+                <p style="margin-top: 15px; color: var(--gray);">Memuat jadwal...</p>
+            </div>
+            
+            <!-- Empty State (akan ditampilkan jika tidak ada jadwal) -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3>Belum Ada Jadwal</h3>
+                <p>Perangkat ini belum memiliki jadwal otomatis. Klik tombol "Tambah Jadwal Baru" untuk membuat jadwal pertama.</p>
+                <button class="btn-add" onclick="openAddModal()" style="margin: 0 auto;">
+                    <i class="fas fa-plus"></i> Buat Jadwal Pertama
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah/Edit Jadwal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">
+                    <i class="fas fa-plus-circle"></i> Tambah Jadwal Baru
+                </h3>
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm" onsubmit="saveSchedule(event)">
+                    <input type="hidden" id="originalName" name="originalName">
+                    
+                    <!-- Schedule Name -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-tag"></i> Nama Jadwal
+                        </label>
+                        <input type="text" class="form-control" id="scheduleName" 
+                               placeholder="Contoh: Nyala Setiap Hari" required>
+                        <small style="color: var(--gray); display: block; margin-top: 5px;">
+                            Nama jadwal harus unik (tidak boleh sama)
+                        </small>
+                    </div>
+
+                    <!-- Start Time -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-play"></i> Waktu Mulai
+                        </label>
+                        <div class="time-group">
+                            <select class="time-select" id="startHour" required>
+                                <option value="">Jam</option>
+                            </select>
+                            <span style="font-weight: bold; font-size: 1.2rem;">:</span>
+                            <select class="time-select" id="startMinute" required>
+                                <option value="">Menit</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Start Action -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-bolt"></i> Aksi Mulai
+                        </label>
+                        <select class="action-select" id="startAction" required>
+                            <option value="ON">ON - Nyalakan perangkat</option>
+                            <option value="OFF">OFF - Matikan perangkat</option>
+                            <option value="None">None - Tidak melakukan apapun</option>
+                        </select>
+                    </div>
+
+                    <!-- End Time -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-stop"></i> Waktu Selesai
+                        </label>
+                        <div class="time-group">
+                            <select class="time-select" id="endHour" required>
+                                <option value="">Jam</option>
+                            </select>
+                            <span style="font-weight: bold; font-size: 1.2rem;">:</span>
+                            <select class="time-select" id="endMinute" required>
+                                <option value="">Menit</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- End Action -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-power-off"></i> Aksi Selesai
+                        </label>
+                        <select class="action-select" id="endAction" required>
+                            <option value="ON">ON - Nyalakan perangkat</option>
+                            <option value="OFF">OFF - Matikan perangkat</option>
+                            <option value="None">None - Tidak melakukan apapun</option>
+                        </select>
+                    </div>
+
+                    <!-- Only Active At Day -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-calendar-day"></i> Aktif Pada Hari
+                        </label>
+                        <select class="action-select" id="activeDays">
+                            <option value="ALL">Semua Hari (Default)</option>
+                            <option value="MONDAY">Senin</option>
+                            <option value="TUESDAY">Selasa</option>
+                            <option value="WEDNESDAY">Rabu</option>
+                            <option value="THURSDAY">Kamis</option>
+                            <option value="FRIDAY">Jumat</option>
+                            <option value="SATURDAY">Sabtu</option>
+                            <option value="SUNDAY">Minggu</option>
+                            <option value="WEEKDAY">Senin - Jumat</option>
+                            <option value="WEEKEND">Sabtu - Minggu</option>
+                        </select>
+                        <small style="color: var(--gray); display: block; margin-top: 5px;">
+                            Pilih hari dimana jadwal ini aktif. Default: Semua hari
+                        </small>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal()">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i> Simpan Jadwal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- JavaScript -->
+    <script>
+        // Global variables
+        let deviceId = null;
+        let schedules = [];
+        let isEditMode = false;
+        let isLoading = true;
+        let timeData = null;
+
+        // DOM Elements
+        const schedulesGrid = document.getElementById('schedulesGrid');
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const deviceInfo = document.getElementById('deviceInfo');
+        const scheduleModal = document.getElementById('scheduleModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const scheduleForm = document.getElementById('scheduleForm');
+        const toast = document.getElementById('toast');
+        const totalSchedulesEl = document.getElementById('totalSchedules');
+        const activeSchedulesEl = document.getElementById('activeSchedules');
+        const conflictSchedulesEl = document.getElementById('conflictSchedules');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log(' Initializing Schedule Manager...');
+            
+            // Get device ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            deviceId = urlParams.get('deviceid');
+            
+            if (!deviceId) {
+                showToast('Device ID tidak ditemukan', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            // Load time data
+            await loadTimeData();
+            
+            // Populate time dropdowns
+            populateTimeDropdowns();
+            
+            // Load schedules
+            await loadSchedules();
+            
+            console.log(` Schedule Manager initialized for device: ${deviceId}`);
+        });
+
+        // Load time data from server
+        async function loadTimeData() {
+            try {
+                const response = await fetch('/api/time-date');
+                if (response.ok) {
+                    timeData = await response.json();
+                    console.log(' Time data loaded:', timeData);
+                }
+            } catch (error) {
+                console.error('Failed to load time data:', error);
+            }
+        }
+
+        // Populate hour and minute dropdowns
+        function populateTimeDropdowns() {
+            const startHour = document.getElementById('startHour');
+            const startMinute = document.getElementById('startMinute');
+            const endHour = document.getElementById('endHour');
+            const endMinute = document.getElementById('endMinute');
+            
+            // Hours (00-23)
+            for (let i = 0; i < 24; i++) {
+                const hourStr = i.toString().padStart(2, '0');
+                startHour.innerHTML += `<option value="${hourStr}">${hourStr}</option>`;
+                endHour.innerHTML += `<option value="${hourStr}">${hourStr}</option>`;
+            }
+            
+            // Minutes (00-59)
+            for (let i = 0; i < 60; i++) {
+                const minuteStr = i.toString().padStart(2, '0');
+                startMinute.innerHTML += `<option value="${minuteStr}">${minuteStr}</option>`;
+                endMinute.innerHTML += `<option value="${minuteStr}">${minuteStr}</option>`;
+            }
+            
+            // Set default time (current time + 1 hour)
+            if (timeData) {
+                const currentHour = timeData.hours;
+                const currentMinute = timeData.minutes;
+                
+                // Start time: current time
+                startHour.value = currentHour.toString().padStart(2, '0');
+                startMinute.value = currentMinute.toString().padStart(2, '0');
+                
+                // End time: current time + 1 hour
+                let endHourVal = currentHour + 1;
+                if (endHourVal >= 24) endHourVal = 0;
+                endHour.value = endHourVal.toString().padStart(2, '0');
+                endMinute.value = currentMinute.toString().padStart(2, '0');
+            }
+        }
+
+        // Load schedules from API
+        async function loadSchedules() {
+            try {
+                isLoading = true;
+                loadingState.style.display = 'block';
+                emptyState.style.display = 'none';
+                
+                console.log(` Loading schedules for device: ${deviceId}`);
+                
+                const response = await fetch(`/api/schedule/${deviceId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    schedules = result.schedules || [];
+                    deviceInfo.innerHTML = `<i class="fas fa-microchip"></i> ${deviceId} (${schedules.length} jadwal)`;
+                    
+                    updateStats();
+                    renderSchedules();
+                    
+                    console.log(` Loaded ${schedules.length} schedules`);
+                } else {
+                    throw new Error(result.error || 'Failed to load schedules');
+                }
+            } catch (error) {
+                console.error(' Error loading schedules:', error);
+                showToast('Gagal memuat jadwal: ' + error.message, 'error');
+                
+                // Show error in grid
+                schedulesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                        </div>
+                        <h3>Gagal Memuat Data</h3>
+                        <p>${error.message}</p>
+                        <button class="btn-add" onclick="loadSchedules()" style="margin: 0 auto;">
+                            <i class="fas fa-sync-alt"></i> Coba Lagi
+                        </button>
+                    </div>
+                `;
+            } finally {
+                isLoading = false;
+                loadingState.style.display = 'none';
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = schedules.length;
+            const active = schedules.filter(s => s["Schedule Status"] === "Active").length;
+            
+            // Simple conflict detection (for demo)
+            const conflicts = detectConflicts();
+            
+            totalSchedulesEl.textContent = total;
+            activeSchedulesEl.textContent = active;
+            conflictSchedulesEl.textContent = conflicts.length;
+        }
+
+        // Detect schedule conflicts
+        function detectConflicts() {
+            const conflicts = [];
+            
+            // Only check active schedules
+            const activeSchedules = schedules.filter(s => s["Schedule Status"] === "Active");
+            
+            for (let i = 0; i < activeSchedules.length; i++) {
+                for (let j = i + 1; j < activeSchedules.length; j++) {
+                    const s1 = activeSchedules[i];
+                    const s2 = activeSchedules[j];
+                    
+                    // Check if times overlap
+                    if (s1["Start Time"] === s2["Start Time"] && 
+                        s1["Start Action"] !== s2["Start Action"] &&
+                        (s1["Start Action"] === "ON" || s1["Start Action"] === "OFF") &&
+                        (s2["Start Action"] === "ON" || s2["Start Action"] === "OFF")) {
+                        
+                        // ON + OFF at same time = conflict
+                        if ((s1["Start Action"] === "ON" && s2["Start Action"] === "OFF") ||
+                            (s1["Start Action"] === "OFF" && s2["Start Action"] === "ON")) {
+                            
+                            conflicts.push({
+                                name1: s1["Schedule Name"],
+                                name2: s2["Schedule Name"],
+                                time: s1["Start Time"],
+                                action1: s1["Start Action"],
+                                action2: s2["Start Action"]
+                            });
+                        }
+                    }
+                }
+            }
+            
+            return conflicts;
+        }
+
+        // Render schedules
+        function renderSchedules() {
+            if (schedules.length === 0) {
+                emptyState.style.display = 'block';
+                schedulesGrid.innerHTML = '';
+                schedulesGrid.appendChild(emptyState);
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            // Clear grid
+            schedulesGrid.innerHTML = '';
+            
+            // Detect conflicts for highlighting
+            const conflicts = detectConflicts();
+            const conflictNames = conflicts.map(c => [c.name1, c.name2]).flat();
+            
+            // Sort by time
+            const sortedSchedules = [...schedules].sort((a, b) => {
+                return a["Start Time"].localeCompare(b["Start Time"]);
+            });
+            
+            // Create cards
+            sortedSchedules.forEach(schedule => {
+                const card = createScheduleCard(schedule, conflictNames.includes(schedule["Schedule Name"]));
+                schedulesGrid.appendChild(card);
+            });
+        }
+
+        // Create schedule card element
+        function createScheduleCard(schedule, hasConflict) {
+            const card = document.createElement('div');
+            card.className = `schedule-card ${hasConflict ? 'conflict' : ''}`;
+            card.dataset.name = schedule["Schedule Name"];
+            
+            const isActive = schedule["Schedule Status"] === "Active";
+            const startActionClass = schedule["Start Action"]?.toLowerCase() || 'none';
+            const endActionClass = schedule["End Action"]?.toLowerCase() || 'none';
+            
+            // Format day display
+            let dayDisplay = schedule["Only Active At Day"] || "ALL";
+            if (dayDisplay === "ALL") dayDisplay = "Setiap Hari";
+            else if (dayDisplay === "WEEKDAY") dayDisplay = "Senin - Jumat";
+            else if (dayDisplay === "WEEKEND") dayDisplay = "Sabtu - Minggu";
+            else {
+                const days = {
+                    "MONDAY": "Senin",
+                    "TUESDAY": "Selasa",
+                    "WEDNESDAY": "Rabu",
+                    "THURSDAY": "Kamis",
+                    "FRIDAY": "Jumat",
+                    "SATURDAY": "Sabtu",
+                    "SUNDAY": "Minggu"
+                };
+                dayDisplay = days[dayDisplay] || dayDisplay;
+            }
+            
+            // Format date
+            let createdDate = "N/A";
+            if (schedule.created_at) {
+                try {
+                    const date = new Date(schedule.created_at);
+                    createdDate = date.toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (e) {
+                    createdDate = schedule.created_at;
+                }
+            }
+            
+            card.innerHTML = `
+                ${hasConflict ? '<div class="conflict-badge"><i class="fas fa-exclamation-triangle"></i> Bentrok</div>' : ''}
+                <div class="card-header">
+                    <div class="schedule-name" title="${schedule["Schedule Name"]}">
+                        ${schedule["Schedule Name"]}
+                    </div>
+                    <div class="status-badge ${isActive ? 'active' : 'inactive'}">
+                        <div class="status-dot ${isActive ? 'active' : 'inactive'}"></div>
+                        ${isActive ? 'Aktif' : 'Tidak Aktif'}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="time-grid">
+                        <div class="time-item">
+                            <div class="time-label">MULAI</div>
+                            <div class="time-value">${schedule["Start Time"] || '00:00'}</div>
+                            <div class="time-sub">
+                                <span class="action-badge ${startActionClass}">
+                                    ${schedule["Start Action"] || 'None'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="time-item">
+                            <div class="time-label">SELESAI</div>
+                            <div class="time-value">${schedule["End Time"] || '00:00'}</div>
+                            <div class="time-sub">
+                                <span class="action-badge ${endActionClass}">
+                                    ${schedule["End Action"] || 'None'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-calendar-day"></i> Hari Aktif
+                        </span>
+                        <span class="info-value">
+                            <span class="day-badge">${dayDisplay}</span>
+                        </span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-clock"></i> Dibuat
+                        </span>
+                        <span class="info-value">${createdDate}</span>
+                    </div>
+                    
+                    <div class="switch-container">
+                        <span class="switch-label">
+                            <i class="fas fa-toggle-on"></i> Status Jadwal
+                        </span>
+                        <label class="switch">
+                            <input type="checkbox" ${isActive ? 'checked' : ''} 
+                                   data-name="${schedule["Schedule Name"]}"
+                                   onchange="toggleScheduleStatus('${schedule["Schedule Name"]}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <button class="edit-btn" onclick="openEditModal('${schedule["Schedule Name"]}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="delete-btn" onclick="deleteSchedule('${schedule["Schedule Name"]}')">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Toggle schedule status
+        async function toggleScheduleStatus(scheduleName, isActive) {
+            try {
+                const schedule = schedules.find(s => s["Schedule Name"] === scheduleName);
+                if (!schedule) return;
+                
+                const updatedSchedule = {
+                    ...schedule,
+                    "Schedule Status": isActive ? "Active" : "Inactive"
+                };
+                
+                showToast('Mengupdate status...', 'info');
+                
+                const response = await fetch(`/api/schedule/${deviceId}?originalName=${encodeURIComponent(scheduleName)}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedSchedule)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(`Jadwal ${isActive ? 'diaktifkan' : 'dinonaktifkan'}`, 'success');
+                    await loadSchedules(); // Reload to get updated data
+                } else {
+                    throw new Error(result.error || 'Gagal mengupdate status');
+                }
+            } catch (error) {
+                console.error('Error toggling schedule status:', error);
+                showToast('Gagal mengupdate status: ' + error.message, 'error');
+                // Revert checkbox
+                await loadSchedules();
+            }
+        }
+
+        // Open modal for adding new schedule
+        function openAddModal() {
+            isEditMode = false;
+            modalTitle.innerHTML = '<i class="fas fa-plus-circle"></i> Tambah Jadwal Baru';
+            
+            // Reset form
+            document.getElementById('scheduleForm').reset();
+            document.getElementById('originalName').value = '';
+            
+            // Set default values
+            document.getElementById('startAction').value = 'ON';
+            document.getElementById('endAction').value = 'OFF';
+            document.getElementById('activeDays').value = 'ALL';
+            
+            // Set default time
+            if (timeData) {
+                const currentHour = timeData.hours;
+                const currentMinute = timeData.minutes;
+                
+                document.getElementById('startHour').value = currentHour.toString().padStart(2, '0');
+                document.getElementById('startMinute').value = currentMinute.toString().padStart(2, '0');
+                
+                let endHourVal = currentHour + 1;
+                if (endHourVal >= 24) endHourVal = 0;
+                document.getElementById('endHour').value = endHourVal.toString().padStart(2, '0');
+                document.getElementById('endMinute').value = currentMinute.toString().padStart(2, '0');
+            }
+            
+            scheduleModal.classList.add('show');
+        }
+
+        // Open modal for editing schedule
+        function openEditModal(scheduleName) {
+            const schedule = schedules.find(s => s["Schedule Name"] === scheduleName);
+            if (!schedule) {
+                showToast('Jadwal tidak ditemukan', 'error');
+                return;
+            }
+            
+            isEditMode = true;
+            modalTitle.innerHTML = '<i class="fas fa-edit"></i> Edit Jadwal';
+            
+            // Parse time
+            const startTime = schedule["Start Time"] || '00:00';
+            const [startHour, startMinute] = startTime.split(':');
+            
+            const endTime = schedule["End Time"] || '00:00';
+            const [endHour, endMinute] = endTime.split(':');
+            
+            // Fill form
+            document.getElementById('originalName').value = schedule["Schedule Name"];
+            document.getElementById('scheduleName').value = schedule["Schedule Name"];
+            document.getElementById('startHour').value = startHour;
+            document.getElementById('startMinute').value = startMinute;
+            document.getElementById('startAction').value = schedule["Start Action"] || 'ON';
+            document.getElementById('endHour').value = endHour;
+            document.getElementById('endMinute').value = endMinute;
+            document.getElementById('endAction').value = schedule["End Action"] || 'OFF';
+            document.getElementById('activeDays').value = schedule["Only Active At Day"] || 'ALL';
+            
+            scheduleModal.classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            scheduleModal.classList.remove('show');
+        }
+
+        // Save schedule (create or update)
+        async function saveSchedule(event) {
+            event.preventDefault();
+            
+            try {
+                // Get form values
+                const scheduleName = document.getElementById('scheduleName').value.trim();
+                const startHour = document.getElementById('startHour').value;
+                const startMinute = document.getElementById('startMinute').value;
+                const startAction = document.getElementById('startAction').value;
+                const endHour = document.getElementById('endHour').value;
+                const endMinute = document.getElementById('endMinute').value;
+                const endAction = document.getElementById('endAction').value;
+                const activeDays = document.getElementById('activeDays').value;
+                const originalName = document.getElementById('originalName').value;
+                
+                // Validate
+                if (!scheduleName) {
+                    showToast('Nama jadwal harus diisi', 'error');
+                    return;
+                }
+                
+                if (!startHour || !startMinute) {
+                    showToast('Waktu mulai harus diisi', 'error');
+                    return;
+                }
+                
+                if (!endHour || !endMinute) {
+                    showToast('Waktu selesai harus diisi', 'error');
+                    return;
+                }
+                
+                // Check for duplicate name (only when creating or name changed)
+                if (!isEditMode || (isEditMode && originalName !== scheduleName)) {
+                    const isDuplicate = schedules.some(s => s["Schedule Name"] === scheduleName);
+                    if (isDuplicate) {
+                        showToast(`Nama jadwal "${scheduleName}" sudah digunakan`, 'error');
+                        return;
+                    }
+                }
+                
+                // Prepare schedule object
+                const schedule = {
+                    "Schedule Name": scheduleName,
+                    "created_at": isEditMode ? null : (new Date().toISOString()),
+                    "Start Time": `${startHour}:${startMinute}`,
+                    "Start Action": startAction,
+                    "End Time": `${endHour}:${endMinute}`,
+                    "End Action": endAction,
+                    "Only Active At Day": activeDays,
+                    "Schedule Status": "Active" // Default active for new schedules
+                };
+                
+                // If editing, preserve created_at
+                if (isEditMode) {
+                    const existing = schedules.find(s => s["Schedule Name"] === originalName);
+                    if (existing && existing.created_at) {
+                        schedule.created_at = existing.created_at;
+                    }
+                }
+                
+                // Determine method and URL
+                let url = `/api/schedule/${deviceId}`;
+                let method = 'POST';
+                
+                if (isEditMode) {
+                    url += `?originalName=${encodeURIComponent(originalName)}`;
+                    method = 'PUT';
+                }
+                
+                showToast(isEditMode ? 'Mengupdate jadwal...' : 'Menyimpan jadwal...', 'info');
+                
+                // Send request
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(schedule)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    closeModal();
+                    await loadSchedules(); // Reload schedules
+                } else {
+                    throw new Error(result.error || 'Gagal menyimpan jadwal');
+                }
+                
+            } catch (error) {
+                console.error('Error saving schedule:', error);
+                showToast('Gagal menyimpan: ' + error.message, 'error');
+            }
+        }
+
+        // Delete schedule
+        async function deleteSchedule(scheduleName) {
+            if (!confirm(`Yakin ingin menghapus jadwal "${scheduleName}"?`)) {
+                return;
+            }
+            
+            try {
+                showToast('Menghapus jadwal...', 'info');
+                
+                const response = await fetch(`/api/schedule/${deviceId}?name=${encodeURIComponent(scheduleName)}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('Jadwal berhasil dihapus', 'success');
+                    await loadSchedules(); // Reload schedules
+                } else {
+                    throw new Error(result.error || 'Gagal menghapus jadwal');
+                }
+                
+            } catch (error) {
+                console.error('Error deleting schedule:', error);
+                showToast('Gagal menghapus: ' + error.message, 'error');
+            }
+        }
+
+        // Go back to dashboard (deterministic)
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function goToScheduleSettings() {
+            if (!deviceId) {
+                showToast('Device ID tidak ditemukan', 'error');
+                return;
+            }
+            window.location.href = `schedule-settings.html?deviceid=${deviceId}`;
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const icon = type === 'success' ? 'fas fa-check-circle' : 
+                        type === 'error' ? 'fas fa-exclamation-circle' : 
+                        type === 'warning' ? 'fas fa-exclamation-triangle' :
+                        'fas fa-info-circle';
+            
+            toast.innerHTML = `
+                <i class="${icon}"></i>
+                <span>${message}</span>
+            `;
+            toast.className = `toast toast-${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target === scheduleModal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
+
+

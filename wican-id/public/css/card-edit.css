@@ -1,0 +1,947 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --danger: #e63946;
+            --warning: #f8961e;
+            --success: #38b000;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --card-bg: #ffffff;
+            --body-bg: #f5f7fb;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        /* Card */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            background-color: var(--light);
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .action-button:hover {
+            background-color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-button i {
+            font-size: 1.2rem;
+            color: var(--primary);
+            width: 24px;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+
+        .action-desc {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Delete Button */
+        .delete-button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            background-color: #ffeaea;
+            border: 2px solid #ffcccc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .delete-button:hover {
+            background-color: #ffdbdb;
+            border-color: var(--danger);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .delete-button i {
+            font-size: 1.2rem;
+            color: var(--danger);
+            width: 24px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            animation: modalFade 0.3s ease;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 100px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d00000;
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2a9d8f;
+        }
+
+        /* Info Display */
+        .info-display {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1100;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background-color: var(--success);
+        }
+
+        .toast-error {
+            background-color: var(--danger);
+        }
+
+        .toast-info {
+            background-color: var(--primary);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading Spinner */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Status Colors */
+.online-status {
+    color: var(--success);
+    font-weight: bold;
+}
+
+.offline-status {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+/* Error Message */
+.error-message {
+    background-color: rgba(230, 57, 70, 0.1);
+    border: 1px solid rgba(230, 57, 70, 0.3);
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+/* Disabled State */
+.disabled {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
+
+/* Section Titles */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    border-bottom: 2px solid var(--gray-light);
+    padding-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.section-title i {
+    font-size: 1.2rem;
+}
+
+/* ESP Tools Section Specific Styles */
+#espToolsSection {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+#espToolsSection .action-button {
+    border-left: 4px solid #38b000;
+}
+
+#espToolsSection .action-button:hover {
+    border-left-color: #2a9d8f;
+}
+
+/* Device Management Section Specific Styles */
+#deviceManagementSection .action-button {
+    border-left: 4px solid var(--primary);
+}
+
+#deviceManagementSection .action-button:hover {
+    border-left-color: var(--primary-dark);
+}
+
+/* Delete Button Specific Styles */
+#deleteButton {
+    margin-top: 1rem;
+    border-left: 4px solid var(--danger);
+}
+
+#deleteButton:hover {
+    border-left-color: #d00000;
+}
+
+/* Icon Colors for ESP Tools */
+#previewCodeBtn i:first-child { color: #4361ee; }
+#downloadCodeBtn i:first-child { color: #38b000; }
+#downloadBinaryBtn i:first-child { color: #7209b7; }
+#programEspBtn i:first-child { color: #f8961e; }
+
+/* Loading Spinner Animation */
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Loading Modal */
+#loadingModal .modal-content {
+    max-width: 350px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Spacing between sections */
+.action-buttons {
+    margin-bottom: 2rem;
+}
+
+#deleteButton {
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 1rem;
+    }
+    
+    .section-title i {
+        font-size: 1rem;
+    }
+    
+    #espToolsSection,
+    #deviceManagementSection {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 0.95rem;
+    }
+    
+    .action-button {
+        padding: 0.8rem 1rem;
+    }
+    
+    .action-title {
+        font-size: 0.95rem;
+    }
+    
+    .action-desc {
+        font-size: 0.8rem;
+    }
+}
+
+/* ============================================
+   RESTART ESP BUTTON - NEW FEATURE
+   ============================================ */
+
+/* Restart Button - Warna Orange/Kuning */
+.restart-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.5rem;
+    background-color: #fff4e6;
+    border: 2px solid #ffe0b3;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.restart-button:hover {
+    background-color: #ffe8d9;
+    border-color: #f8961e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(248, 150, 30, 0.2);
+}
+
+.restart-button i {
+    font-size: 1.2rem;
+    color: #f8961e;
+    width: 24px;
+}
+
+.restart-button .action-content {
+    flex: 1;
+}
+
+.restart-button .action-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #e85d04;
+}
+
+.restart-button .action-desc {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.restart-button i:last-child {
+    color: #f8961e;
+    opacity: 0.6;
+}
+
+.restart-button:hover i:last-child {
+    opacity: 1;
+    transform: translateX(3px);
+}
+
+/* Restart Button - Variasi untuk status offline */
+.restart-button.disabled {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+}
+
+.restart-button.disabled i {
+    color: #adb5bd !important;
+}
+
+.restart-button.disabled .action-title {
+    color: #6c757d !important;
+}
+
+/* Border Left Color */
+#restartEspBtn {
+    border-left: 4px solid #f8961e;
+}
+
+#restartEspBtn:hover {
+    border-left-color: #e85d04;
+}
+
+/* Modal Konfirmasi Restart */
+#restartConfirmModal .modal-header {
+    background: linear-gradient(135deg, #f8961e, #e85d04);
+    color: white;
+}
+
+#restartConfirmModal .modal-header h3 {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#restartConfirmModal .modal-header h3 i {
+    font-size: 1.4rem;
+}
+
+#restartConfirmModal .modal-close {
+    color: white;
+}
+
+#restartConfirmModal .btn-warning {
+    background: #f8961e;
+    color: white;
+}
+
+#restartConfirmModal .btn-warning:hover {
+    background: #e85d04;
+}
+
+/* Ikon Rotasi untuk loading */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.fa-rotate {
+    animation: rotate 2s linear infinite;
+}
+
+/* Status Badge untuk Info Modal */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.status-badge.online {
+    background-color: #38b000;
+}
+
+.status-badge.offline {
+    background-color: #e63946;
+}
+
+.status-badge.waiting {
+    background-color: #f8961e;
+}
+
+/* Restart History - Info kecil */
+.restart-history {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.restart-history i {
+    font-size: 0.7rem;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .restart-button {
+        padding: 0.8rem 1rem;
+    }
+    
+    .restart-button .action-title {
+        font-size: 0.95rem;
+    }
+    
+    .restart-button .action-desc {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .restart-button {
+        padding: 0.8rem 1rem;
+    }
+}
+
+/* ============================================
+   END OF RESTART ESP BUTTON STYLES
+   ============================================ */
+
+   /* Reverse Button Styles */
+.reverse-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(145deg, #7209b7, #b5179e);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(114, 9, 183, 0.2);
+}
+
+.reverse-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(114, 9, 183, 0.3);
+    background: linear-gradient(145deg, #8a2be2, #c51cb8);
+}
+
+.reverse-button i:first-child {
+    font-size: 1.2rem;
+    color: white;
+    width: 24px;
+}
+
+.reverse-button .action-content {
+    flex: 1;
+    color: white;
+}
+
+.reverse-button .action-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: white;
+}
+
+.reverse-button .action-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.reverse-button i:last-child {
+    color: rgba(255, 255, 255, 0.7);
+    transition: transform 0.3s ease;
+}
+
+.reverse-button:hover i:last-child {
+    transform: translateX(5px);
+    color: white;
+}
+
+/* Status Badge */
+.reverse-status {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.badge-active {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #38b000, #2a9d8f);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.badge-inactive {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ====================================
+   DESKTOP HEADER CONSISTENCY OVERRIDE
+   ==================================== */
+header {
+    background: rgba(67, 97, 238, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-container {
+    gap: 6px;
+}
+
+.logo {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.logo-text h1 {
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.logo-text p {
+    font-size: 0.65rem;
+}
+
+.back-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card {
+    border: 1px solid var(--gray-light);
+    box-shadow: 0 10px 24px rgba(20, 24, 40, 0.08);
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Mobile • Program ESP • WiCan</title>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <!-- LOAD ESP WEB TOOLS dari CDN -->
+    <script type="module" src="/web/install-button.js"></script>
+    <link rel="stylesheet" href="css/esp-flasher.css">
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: MOBILE -->
+    <style id="wic-header-consistency-mobile">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.5rem 1rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 8px !important;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 8px !important;
+            z-index: 120 !important;
+            border-radius: 14px !important;
+            width: calc(100% - 16px) !important;
+            margin: 8px auto 0 auto !important;
+        }
+        .logo-container {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+        }
+        .logo {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1 {
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+        }
+        .logo-text p {
+            font-size: 0.65rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+        /* MOBILE NO-SHIFT OVERRIDE */
+        header,
+        .header-left,
+        .logo-container {
+            transition: none !important;
+        }
+        header.scrolled .header-left,
+        header.scrolled .logo-container {
+            transform: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Semua konten akan di-generate oleh JavaScript -->
+    <div id="app"></div>
+    
+    <script src="js/esp-flasher.js"></script>
+</body>
+</html>

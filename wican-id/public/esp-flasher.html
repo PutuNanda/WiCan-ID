@@ -1,0 +1,929 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program WiCan - WiCan Dashboard</title>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <!-- LOAD ESP WEB TOOLS dari CDN -->
+    <script type="module" src="/web/install-button.js"></script>
+    <style>
+        /* SAMA PERSIS DENGAN add-device.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #38b000;
+            --danger: #e63946;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --card-bg: #ffffff;
+            --body-bg: #f5f7fb;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        /* Status Card */
+        .status-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .device-info {
+            background: var(--gray-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Status */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-ready { background: var(--success); }
+        .status-waiting { background: var(--warning); }
+        .status-error { background: var(--danger); }
+
+        /* Loading */
+        .loading-status {
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-icon.ready { color: var(--success); }
+        .status-icon.waiting { color: var(--warning); }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 180px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2a9d8f;
+            transform: translateY(-2px);
+        }
+
+        /* Flasher Container */
+        .flasher-container {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            border: 2px dashed var(--primary);
+        }
+
+        .flasher-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .flasher-header h3 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .flasher-header p {
+            color: var(--gray);
+        }
+
+        /* ESP Install Button */
+        esp-web-install-button {
+            --esp-tools-button-color: #38b000;
+            --esp-tools-button-text-color: white;
+            --esp-tools-button-border-radius: 8px;
+            --esp-tools-button-padding: 16px 32px;
+            --esp-tools-button-font-size: 1.1rem;
+            --esp-tools-button-font-weight: 600;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .modal-header h3 {
+            color: var(--dark);
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            margin-bottom: 2rem;
+        }
+
+        .modal-body p {
+            color: var(--dark);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1100;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background-color: var(--success);
+        }
+
+        .toast-error {
+            background-color: var(--danger);
+        }
+
+        .toast-info {
+            background-color: var(--primary);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .loading-spinner {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .status-card {
+                padding: 1.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+        }
+    </style>
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: DESKTOP -->
+    <style id="wic-header-consistency-desktop">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 120 !important;
+            border-radius: 18px !important;
+            width: calc(100% - 24px) !important;
+            margin: 10px auto 0 auto !important;
+        }
+        .logo-container,
+        .brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1,
+        .brand .logo-text h1 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        .logo-text p,
+        .brand .logo-text p {
+            font-size: 0.75rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <div class="logo" style="background:#111827;border:1px solid rgba(255,255,255,0.35);"><img src="/WiCan-icon.png" alt="WiCan" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+            <div class="logo-text">
+                <h1>WiCan</h1>
+                <p>Program Perangkat ESP-01S</p>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-button" title="Kembali ke Dashboard">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="status-card">
+            <!-- Device Info -->
+            <div class="device-info" id="deviceInfo">
+                <div class="info-row">
+                    <span class="info-label">ID Perangkat:</span>
+                    <span class="info-value" id="deviceIdText">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Nama Kartu:</span>
+                    <span class="info-value" id="deviceNameText">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status Binary:</span>
+                    <span class="info-value">
+                        <span class="status-badge status-waiting" id="binaryStatus">Memeriksa...</span>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ukuran Binary:</span>
+                    <span class="info-value" id="binarySize">-</span>
+                </div>
+            </div>
+
+            <!-- Loading Status -->
+            <div class="loading-status" id="loadingStatus">
+                <div class="status-icon waiting" id="statusIcon">
+                    <i class="fas fa-sync-alt fa-spin"></i>
+                </div>
+                <h3 id="statusTitle">Sedang melakukan Kompilasi...</h3>
+                <p id="statusMessage">Mohon tunggu sebentar, sistem sedang mengkompilasi file binary.</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group" id="actionButtons" style="display: none;">
+                <button class="btn btn-secondary" id="backBtn">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+                <button class="btn btn-success" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download Binary
+                </button>
+            </div>
+
+            <!-- Flasher Container -->
+            <div class="flasher-container" id="flasherContainer" style="display: none;">
+                <div class="flasher-header">
+                    <h3>Web Flasher ESP-01S </h3>
+                    <p>Solusi praktis untuk memprogram ESP-01S secara online</p>
+                </div>
+                
+                <!-- ESP Web Install Button -->
+                <esp-web-install-button 
+                    id="flashButton" 
+                    manifest="">
+                </esp-web-install-button>
+                
+                <div style="margin-top: 1rem; text-align: center; color: var(--gray); font-size: 0.9rem;">
+                    <p><i class="fas fa-info-circle"></i> Sambungkan ESP-01S via USB, lalu klik tombol Connect di atas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Binary Ready -->
+    <div class="modal" id="binaryReadyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: var(--success);">
+                    <i class="fas fa-check-circle"></i> Binary Siap! 
+                </h3>
+                <button class="modal-close" id="closeBinaryModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <i class="fas fa-microchip" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h4 style="color: var(--dark); margin-bottom: 0.5rem;">File Binary Siap Diprogram!</h4>
+                    <p style="color: var(--gray);">Klik tombol <strong>FLASH</strong> untuk memprogram ESP-01S Anda.</p>
+                </div>
+                
+                <div style="background: var(--gray-light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <div class="info-row">
+                        <span class="info-label">ID Perangkat:</span>
+                        <span class="info-value" id="modalDeviceId">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Ukuran Binary:</span>
+                        <span class="info-value" id="modalBinarySize">-</span>
+                    </div>
+                </div>
+                
+                <div style="background: var(--light); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--warning);">
+                    <p style="margin: 0; color: var(--dark);">
+                        <i class="fas fa-lightbulb" style="color: var(--warning); margin-right: 8px;"></i>
+                        Pastikan ESP-01S terhubung via USB dan masuk mode flash sebelum menekan tombol Flash.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeModalBtn">Tutup</button>
+                <button class="btn btn-success" id="gotoFlashBtn">
+                    <i class="fas fa-bolt"></i> Buka Web Flasher
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Background Refresh -->
+    <div class="modal" id="refreshModal" style="background: rgba(0, 0, 0, 0.7);">
+        <div class="modal-content" style="background: transparent; box-shadow: none; max-width: 300px;">
+            <div style="text-align: center; padding: 2rem; background: white; border-radius: 16px;">
+                <div class="loading-spinner">
+                    <i class="fas fa-sync-alt fa-spin"></i>
+                </div>
+                <h3 style="color: var(--dark); margin-bottom: 0.5rem;">Sedang Mengkompilasi...</h3>
+                <p style="color: var(--gray); font-size: 0.9rem;">
+                    Sistem sedang mengkompilasi file binary...
+                </p>
+                <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 5px;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: pulse 1.5s infinite;"></div>
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: pulse 1.5s infinite 0.3s;"></div>
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: pulse 1.5s infinite 0.6s;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Global variables
+        let currentDeviceId = '';
+        let currentDeviceName = '';
+        let binaryReady = false;
+        let refreshInterval = null;
+        let isFirstCheck = true;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get deviceId from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            currentDeviceId = urlParams.get('deviceId');
+
+            if (!currentDeviceId) {
+                showError('ID Perangkat tidak ditemukan di URL');
+                return;
+            }
+
+            console.log(' Loading device:', currentDeviceId);
+            await loadDeviceInfo();
+            
+            // Start background refresh if binary not ready
+            if (!binaryReady) {
+                startBackgroundRefresh();
+            }
+        });
+
+        // Load device info
+        async function loadDeviceInfo() {
+            try {
+                showLoading();
+                
+                const response = await fetch(`/api/esp-flasher/${currentDeviceId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const device = result.device;
+                    console.log(' Device info:', device);
+                    
+                    updateDeviceUI(device);
+                    
+                    if (device.binaryExists) {
+                        showBinaryReady(device);
+                        stopBackgroundRefresh();
+                        
+                        // Show modal only on first check
+                        if (isFirstCheck) {
+                            showBinaryReadyModal(device);
+                            isFirstCheck = false;
+                        }
+                    } else {
+                        showBinaryWaiting(device);
+                    }
+                    
+                } else {
+                    throw new Error(result.error || 'Gagal memuat device');
+                }
+                
+            } catch (error) {
+                console.error(' Error:', error);
+                showError(`Gagal: ${error.message}`);
+            }
+        }
+
+        // Update UI
+        function updateDeviceUI(device) {
+            document.getElementById('deviceIdText').textContent = device.id;
+            document.getElementById('deviceNameText').textContent = device.customName;
+            document.getElementById('binarySize').textContent = device.binarySizeKB ? `${device.binarySizeKB} KB` : '-';
+            currentDeviceName = device.customName;
+        }
+
+        // Show loading
+        function showLoading() {
+            document.getElementById('statusIcon').innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>';
+            document.getElementById('statusTitle').textContent = 'Memeriksa file binary...';
+            document.getElementById('statusMessage').textContent = 'Mohon tunggu sebentar...';
+            document.getElementById('binaryStatus').textContent = 'Memeriksa';
+            document.getElementById('binaryStatus').className = 'status-badge status-waiting';
+            document.getElementById('actionButtons').style.display = 'none';
+            document.getElementById('flasherContainer').style.display = 'none';
+        }
+
+        // Show binary ready
+        function showBinaryReady(device) {
+            binaryReady = true;
+            
+            document.getElementById('statusIcon').innerHTML = '<i class="fas fa-check-circle"></i>';
+            document.getElementById('statusIcon').className = 'status-icon ready';
+            document.getElementById('statusTitle').textContent = ' Binary Siap!';
+            document.getElementById('statusMessage').textContent = `File binary siap untuk diprogram (${device.binarySizeKB} KB)`;
+            document.getElementById('binaryStatus').textContent = 'Siap';
+            document.getElementById('binaryStatus').className = 'status-badge status-ready';
+            
+            // Setup Web Flasher
+            setupWebFlasher();
+            
+            // Show buttons
+            document.getElementById('actionButtons').style.display = 'flex';
+            document.getElementById('flasherContainer').style.display = 'block';
+        }
+
+        // Show binary waiting
+        function showBinaryWaiting(device) {
+            document.getElementById('statusIcon').innerHTML = '<i class="fas fa-clock"></i>';
+            document.getElementById('statusTitle').textContent = ' Menunggu Binary';
+            document.getElementById('statusMessage').textContent = 'File binary belum tersedia. Sistem sedang melakukan kompilasi...';
+            document.getElementById('binaryStatus').textContent = 'Menunggu';
+            document.getElementById('binaryStatus').className = 'status-badge status-waiting';
+            
+            document.getElementById('actionButtons').style.display = 'flex';
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('statusIcon').innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            document.getElementById('statusIcon').className = 'status-icon waiting';
+            document.getElementById('statusTitle').textContent = ' Terjadi Kesalahan';
+            document.getElementById('statusMessage').textContent = message;
+            document.getElementById('binaryStatus').textContent = 'Error';
+            document.getElementById('binaryStatus').className = 'status-badge status-error';
+            
+            document.getElementById('actionButtons').style.display = 'flex';
+            stopBackgroundRefresh();
+        }
+
+        // Setup Web Flasher
+        function setupWebFlasher() {
+            const flashButton = document.getElementById('flashButton');
+            
+            // Set custom styles
+            flashButton.style.setProperty('--esp-tools-button-color', '#38b000');
+            flashButton.style.setProperty('--esp-tools-button-text-color', 'white');
+            flashButton.style.setProperty('--esp-tools-button-border-radius', '8px');
+            
+            // Set manifest URL
+            const manifestUrl = `/api/manifest/${currentDeviceId}`;
+            console.log(' Manifest URL:', manifestUrl);
+            
+            // Set attribute manifest sebagai URL
+            flashButton.setAttribute('manifest', manifestUrl);
+            
+            console.log(' Web Flasher ready!');
+        }
+
+        // Background refresh system
+        function startBackgroundRefresh() {
+            // Show refresh modal if not already shown
+            showRefreshModal();
+            
+            // Start interval
+            refreshInterval = setInterval(async () => {
+                console.log(' Background refresh checking...');
+                try {
+                    const response = await fetch(`/api/esp-flasher/${currentDeviceId}`);
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success && result.device.binaryExists) {
+                            // Binary is ready!
+                            clearInterval(refreshInterval);
+                            refreshInterval = null;
+                            
+                            // Update UI
+                            updateDeviceUI(result.device);
+                            showBinaryReady(result.device);
+                            setupWebFlasher();
+                            
+                            // Hide refresh modal
+                            hideRefreshModal();
+                            
+                            // Show success modal
+                            showBinaryReadyModal(result.device);
+                        }
+                    }
+                } catch (error) {
+                    console.log('Background refresh error:', error);
+                }
+            }, 3000); // Check every 3 seconds
+        }
+
+        function stopBackgroundRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+                hideRefreshModal();
+            }
+        }
+
+        function showRefreshModal() {
+            document.getElementById('refreshModal').classList.add('show');
+        }
+
+        function hideRefreshModal() {
+            document.getElementById('refreshModal').classList.remove('show');
+        }
+
+        // Show binary ready modal
+        function showBinaryReadyModal(device) {
+            document.getElementById('modalDeviceId').textContent = device.id;
+            document.getElementById('modalBinarySize').textContent = device.binarySizeKB ? `${device.binarySizeKB} KB` : '-';
+            document.getElementById('binaryReadyModal').classList.add('show');
+        }
+
+        function hideBinaryReadyModal() {
+            document.getElementById('binaryReadyModal').classList.remove('show');
+        }
+
+        // Show toast notification
+        function showToast(message, type = "info") {
+            const icon = type === 'success' ? 'fas fa-check-circle' : 
+                        type === 'error' ? 'fas fa-exclamation-circle' : 
+                        'fas fa-info-circle';
+            
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `
+                <i class="${icon}"></i>
+                <span>${message}</span>
+            `;
+            toast.className = `toast toast-${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Event Listeners
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+        
+        document.getElementById('downloadBtn').addEventListener('click', downloadBinary);
+        
+        // Modal event listeners
+        document.getElementById('closeBinaryModal').addEventListener('click', hideBinaryReadyModal);
+        document.getElementById('closeModalBtn').addEventListener('click', hideBinaryReadyModal);
+        document.getElementById('gotoFlashBtn').addEventListener('click', () => {
+            hideBinaryReadyModal();
+            // Scroll to flasher section
+            document.getElementById('flasherContainer').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Download binary
+        async function downloadBinary() {
+            try {
+                const btn = document.getElementById('downloadBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="loading"></span> Mengunduh...';
+                btn.disabled = true;
+                
+                const downloadUrl = `/api/download-binary/${currentDeviceId}`;
+                console.log(' Downloading:', downloadUrl);
+                
+                // Fetch binary
+                const response = await fetch(downloadUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+                
+                const blob = await response.blob();
+                
+                // Create download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentDeviceId}.bin`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                console.log(' Download success');
+                showToast(` Binary berhasil diunduh: ${currentDeviceId}.bin`, 'success');
+                
+            } catch (error) {
+                console.error(' Download error:', error);
+                showToast(` Gagal mengunduh: ${error.message}`, 'error');
+            } finally {
+                const btn = document.getElementById('downloadBtn');
+                btn.innerHTML = '<i class="fas fa-download"></i> Download Binary';
+                btn.disabled = false;
+            }
+        }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            stopBackgroundRefresh();
+        });
+    </script>
+</body>
+</html>
+
+
+

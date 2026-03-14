@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Kode - WiCan Dashboard</title>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="../vendor/highlightjs/atom-one-dark.min.css">
+    <link rel="stylesheet" href="css/code-preview.css">
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: DESKTOP -->
+    <style id="wic-header-consistency-desktop">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 120 !important;
+            border-radius: 18px !important;
+            width: calc(100% - 24px) !important;
+            margin: 10px auto 0 auto !important;
+        }
+        .logo-container,
+        .brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1,
+        .brand .logo-text h1 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        .logo-text p,
+        .brand .logo-text p {
+            font-size: 0.75rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Match dengan halaman lain -->
+    <header>
+        <div class="logo-container">
+            <div class="logo" style="background:#111827;border:1px solid rgba(255,255,255,0.35);"><img src="/WiCan-icon.png" alt="WiCan" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+            <div class="logo-text">
+                <h1>WiCan</h1>
+                <p>Preview Kode Sumber</p>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-button" title="Kembali ke Dashboard">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h2 id="pageTitle">Preview Kode Sumber</h2>
+            <p id="pageDescription">Kode sumber untuk perangkat ESP-01S</p>
+        </div>
+
+        <!-- Device Information -->
+        <div class="device-info" id="deviceInfo">
+            <div class="info-row">
+                <div class="info-label">ID Perangkat:</div>
+                <div class="info-value" id="infoDeviceId">Loading...</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Nama Kartu:</div>
+                <div class="info-value" id="infoCustomName">Loading...</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Status:</div>
+                <div class="info-value" id="infoStatus">Loading...</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Dibuat pada:</div>
+                <div class="info-value" id="infoCreatedAt">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Code Preview -->
+        <div class="code-container">
+            <div class="code-header">
+                <h3 id="codeFileName">
+                    <i class="fas fa-file-code file-icon"></i>
+                    ESP-01S.ino
+                </h3>
+                <button class="copy-btn" id="copyCodeBtn">
+                    <i class="far fa-copy"></i> Salin Kode
+                </button>
+            </div>
+            <div class="code-content">
+                <pre><code class="language-cpp" id="codeContent">// Loading kode sumber...
+// Harap tunggu sebentar...</code></pre>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="btn btn-secondary" id="backBtn">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </button>
+            <button class="btn btn-success" id="downloadBtn">
+                <i class="fas fa-download"></i> Download Kode
+            </button>
+            <a href="esp-flasher.html" class="btn btn-warning" id="programBtn">
+                <i class="fas fa-microchip"></i> Program ESP
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Highlight.js Script -->
+    <script src="../vendor/highlightjs/highlight.min.js"></script>
+    <!-- Arduino/C++ language support -->
+    <script src="../vendor/highlightjs/arduino.min.js"></script>
+    <script src="../vendor/highlightjs/cpp.min.js"></script>
+    <script src="js/code-preview.js"></script>
+</body>
+</html>
+

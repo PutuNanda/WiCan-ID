@@ -1,0 +1,856 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Perangkat Baru - WiCan Dashboard</title>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --card-bg: #ffffff;
+            --body-bg: #f5f7fb;
+            --online: #38b000;
+            --offline: #e63946;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .add-device-form {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .form-group input:disabled {
+            background-color: var(--gray-light);
+            cursor: not-allowed;
+        }
+
+        .form-help {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Button Styles */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2a9d8f;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e76f00;
+            transform: translateY(-2px);
+        }
+
+        /* Success State */
+        .success-state {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            padding: 3rem;
+            text-align: center;
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+        }
+
+        .success-state h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .success-state p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1100;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background-color: var(--success);
+        }
+
+        .toast-error {
+            background-color: var(--danger);
+        }
+
+        .toast-info {
+            background-color: var(--primary);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .add-device-form {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            header {
+                padding: 1rem 1.5rem;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.3rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .add-device-form {
+                padding: 1rem;
+            }
+            
+            .success-state {
+                padding: 2rem 1rem;
+            }
+            
+            .success-icon {
+                font-size: 3rem;
+            }
+        }
+        /* ====================================
+           DESKTOP HEADER CONSISTENCY OVERRIDE
+           ==================================== */
+        header {
+            background: rgba(67, 97, 238, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            gap: 6px;
+        }
+
+        .logo {
+            width: 34px;
+            height: 34px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 1rem;
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 0.65rem;
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .add-device-form {
+            border: 1px solid var(--gray-light);
+            box-shadow: 0 10px 24px rgba(20, 24, 40, 0.08);
+        }
+    </style>
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: DESKTOP -->
+    <style id="wic-header-consistency-desktop">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 120 !important;
+            border-radius: 18px !important;
+            width: calc(100% - 24px) !important;
+            margin: 10px auto 0 auto !important;
+        }
+        .logo-container,
+        .brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1,
+        .brand .logo-text h1 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        .logo-text p,
+        .brand .logo-text p {
+            font-size: 0.75rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <div class="logo" style="background:#111827;border:1px solid rgba(255,255,255,0.35);"><img src="/WiCan-icon.png" alt="WiCan" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+            <div class="logo-text">
+                <h1>WiCan</h1>
+                <p>Tambah Perangkat Baru</p>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-button" title="Kembali ke Dashboard">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h2>Tambah Perangkat Baru</h2>
+            <p>Isi formulir di bawah untuk menambahkan perangkat ESP-01S baru ke sistem</p>
+        </div>
+
+        <!-- Form Tambah Perangkat -->
+        <div class="add-device-form" id="addDeviceForm">
+            <div class="form-group">
+                <label for="deviceId">
+                    <i class="fas fa-microchip"></i> ID Perangkat (ESP-ID)
+                </label>
+                <input type="text" id="deviceId" placeholder="contoh: lampu-taman, pompa-kolam" required>
+                <div class="form-help">ID unik untuk perangkat ESP-01S. Tidak boleh sama dengan perangkat lain.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="customName">
+                    <i class="fas fa-tag"></i> Nama Kartu
+                </label>
+                <input type="text" id="customName" placeholder="contoh: Lampu Taman Depan, Pompa Kolam Ikan" required>
+                <div class="form-help">Nama yang akan ditampilkan di dashboard.</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="wifiSSID">
+                        <i class="fas fa-wifi"></i> WiFi SSID
+                    </label>
+                    <input type="text" id="wifiSSID" placeholder="Nama jaringan WiFi">
+                    <div class="form-help">Kosongkan untuk memakai SSID default.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wifiPassword">
+                        <i class="fas fa-key"></i> Password WiFi
+                    </label>
+                    <input type="password" id="wifiPassword" placeholder="Password WiFi">
+                    <div class="form-help">Kosongkan untuk memakai password default.</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="serverIP">
+                        <i class="fas fa-server"></i> Server IP
+                    </label>
+                    <input type="text" id="serverIP" value="192.168.1.50" required>
+                    <div class="form-help">Alamat IP server Node.js.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="serverPort">
+                        <i class="fas fa-network-wired"></i> Server Port
+                    </label>
+                    <input type="number" id="serverPort" value="5050" required>
+                    <div class="form-help">Port server Node.js.</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nodePort">
+                        <i class="fas fa-plug"></i> Node Port
+                    </label>
+                    <input type="number" id="nodePort" value="8080" required>
+                    <div class="form-help">Port yang akan digunakan ESP untuk menerima perintah.</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" id="cancelBtn">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button type="button" class="btn btn-primary" id="addDeviceBtn">
+                    <i class="fas fa-plus-circle"></i> Tambah Perangkat
+                </button>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="success-state" id="successState">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Perangkat Berhasil Ditambahkan! </h3>
+            <p id="successMessage">
+                Perangkat <strong id="deviceName"></strong> telah berhasil ditambahkan ke sistem.
+                Kode sumber ESP telah dibuat dan siap untuk di-download dan diunggah ke perangkat.
+            </p>
+            
+            <div class="button-group">
+                <button class="btn btn-secondary" id="previewCodeBtn">
+                    <i class="fas fa-code"></i> Preview Kode
+                </button>
+                <button class="btn btn-success" id="downloadCodeBtn">
+                    <i class="fas fa-download"></i> Download Kode Sumber
+                </button>
+                <button class="btn btn-warning" id="programEspBtn">
+                    <i class="fas fa-microchip"></i> Program ESP
+                </button>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Kembali ke Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // DOM Elements
+        const addDeviceForm = document.getElementById('addDeviceForm');
+        const successState = document.getElementById('successState');
+        const deviceName = document.getElementById('deviceName');
+        const successMessage = document.getElementById('successMessage');
+        const toast = document.getElementById('toast');
+        
+        // Buttons
+        const addDeviceBtn = document.getElementById('addDeviceBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const previewCodeBtn = document.getElementById('previewCodeBtn');
+        const downloadCodeBtn = document.getElementById('downloadCodeBtn');
+        const programEspBtn = document.getElementById('programEspBtn');
+        
+        // Input fields
+        const deviceIdInput = document.getElementById('deviceId');
+        const customNameInput = document.getElementById('customName');
+        const wifiSSIDInput = document.getElementById('wifiSSID');
+        const wifiPasswordInput = document.getElementById('wifiPassword');
+        const serverIPInput = document.getElementById('serverIP');
+        const serverPortInput = document.getElementById('serverPort');
+        const nodePortInput = document.getElementById('nodePort');
+        
+        // Current device ID for operations
+        let currentDeviceId = '';
+        
+        // Event Listeners
+        addDeviceBtn.addEventListener('click', addDevice);
+        cancelBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+        
+        previewCodeBtn.addEventListener('click', () => {
+            if (currentDeviceId) {
+                window.location.href = `code-preview.html?deviceId=${currentDeviceId}`;
+            }
+        });
+        
+        downloadCodeBtn.addEventListener('click', downloadCode);
+        programEspBtn.addEventListener('click', () => {
+            if (currentDeviceId) {
+                window.location.href = `esp-flasher.html?deviceId=${currentDeviceId}`;
+            }
+        });
+        
+        // Load default config
+        loadDefaultConfig();
+        
+        // Load default config from server
+        async function loadDefaultConfig() {
+            try {
+                const response = await fetch('/api/default-config');
+                if (response.ok) {
+                    const data = await response.json();
+                    const config = data.config || {};
+
+                    const serverIP = config['server-ip'] || config.serverIP;
+                    const serverPort = config['server-port'] || config.serverPort;
+                    const nodePort = config['node-port'] || config.nodePort;
+                    const wifiSSID = config['wifi-ssid'] || config.wifiSSID;
+                    const wifiPassword = config['wifi-password'] || config.wifiPassword;
+
+                    if (serverIP) {
+                        serverIPInput.value = serverIP;
+                    }
+
+                    if (serverPort) {
+                        serverPortInput.value = serverPort;
+                    }
+
+                    if (nodePort) {
+                        nodePortInput.value = nodePort;
+                    }
+
+                    if (wifiSSID && !wifiSSIDInput.value.trim()) {
+                        wifiSSIDInput.value = wifiSSID;
+                    }
+
+                    if (wifiPassword && !wifiPasswordInput.value) {
+                        wifiPasswordInput.value = wifiPassword;
+                    }
+                }
+            } catch (error) {
+                console.log('Using default config values');
+            }
+        }
+        
+        // Add device function
+        async function addDevice() {
+            // Validate inputs
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Show loading state
+            const originalText = addDeviceBtn.innerHTML;
+            addDeviceBtn.innerHTML = '<span class="loading"></span> Menambahkan...';
+            addDeviceBtn.disabled = true;
+            
+            try {
+                const deviceData = {
+                    deviceId: deviceIdInput.value.trim(),
+                    customName: customNameInput.value.trim(),
+                    wifiSSID: wifiSSIDInput.value.trim(),
+                    wifiPassword: wifiPasswordInput.value,
+                    serverIP: serverIPInput.value.trim(),
+                    serverPort: parseInt(serverPortInput.value),
+                    nodePort: parseInt(nodePortInput.value)
+                };
+                
+                const response = await fetch('/api/add-device', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(deviceData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Success!
+                    currentDeviceId = deviceData.deviceId;
+                    deviceName.textContent = deviceData.customName;
+                    
+                    // Hide form, show success state
+                    addDeviceForm.style.display = 'none';
+                    successState.style.display = 'block';
+                    
+                    showToast(result.message || 'Perangkat berhasil ditambahkan', 'success');
+                } else {
+                    // Error
+                    showToast(result.error || 'Gagal menambahkan perangkat', 'error');
+                    addDeviceBtn.innerHTML = originalText;
+                    addDeviceBtn.disabled = false;
+                }
+                
+            } catch (error) {
+                console.error('Error adding device:', error);
+                showToast('Gagal menambahkan perangkat. Periksa koneksi jaringan.', 'error');
+                addDeviceBtn.innerHTML = originalText;
+                addDeviceBtn.disabled = false;
+            }
+        }
+        
+        // Download code function
+        async function downloadCode() {
+            if (!currentDeviceId) return;
+            
+            try {
+                const response = await fetch(`/api/download-code/${currentDeviceId}`);
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${currentDeviceId}.ino`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    showToast('Kode sumber berhasil di-download', 'success');
+                } else {
+                    const error = await response.json();
+                    showToast(error.error || 'Gagal mendownload kode sumber', 'error');
+                }
+            } catch (error) {
+                console.error('Error downloading code:', error);
+                showToast('Gagal mendownload kode sumber', 'error');
+            }
+        }
+        
+        // Validate form
+        function validateForm() {
+            const deviceId = deviceIdInput.value.trim();
+            const customName = customNameInput.value.trim();
+            const wifiSSID = wifiSSIDInput.value.trim();
+            const wifiPassword = wifiPasswordInput.value;
+            
+            if (!deviceId) {
+                showToast('ID Perangkat harus diisi', 'error');
+                deviceIdInput.focus();
+                return false;
+            }
+            
+            if (!customName) {
+                showToast('Nama Kartu harus diisi', 'error');
+                customNameInput.focus();
+                return false;
+            }
+            
+            if ((wifiSSID && !wifiPassword) || (!wifiSSID && wifiPassword)) {
+                showToast('WiFi SSID dan Password harus diisi bersamaan atau dikosongkan', 'error');
+                if (!wifiSSID) {
+                    wifiSSIDInput.focus();
+                } else {
+                    wifiPasswordInput.focus();
+                }
+                return false;
+            }
+
+            if (wifiPassword && wifiPassword.length < 8) {
+                showToast('Password WiFi minimal 8 karakter', 'error');
+                wifiPasswordInput.focus();
+                return false;
+            }
+
+            // Check for valid device ID format
+            if (!/^[a-zA-Z0-9\-_]+$/.test(deviceId)) {
+                showToast('ID Perangkat hanya boleh mengandung huruf, angka, tanda hubung, dan underscore', 'error');
+                deviceIdInput.focus();
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Show toast notification
+        function showToast(message, type = "info") {
+            const icon = type === 'success' ? 'fas fa-check-circle' : 
+                        type === 'error' ? 'fas fa-exclamation-circle' : 
+                        'fas fa-info-circle';
+            
+            toast.innerHTML = `
+                <i class="${icon}"></i>
+                <span>${message}</span>
+            `;
+            toast.className = `toast toast-${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
+
+

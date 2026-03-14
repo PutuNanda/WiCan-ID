@@ -1,0 +1,577 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --secondary: #a855f7;
+    --accent: #c084fc;
+    --success: #38b000;
+    --danger: #e63946;
+    --warning: #f8961e;
+    --light: #f8f9fa;
+    --dark: #1e1e2e;
+    --gray: #94a3b8;
+    --gray-light: #e2e8f0;
+    --card-bg: #ffffff;
+    --body-bg: #f5f7fb;
+    --code-bg: #1e1e2e;
+    --code-header: #2d2d44;
+}
+
+body {
+    background-color: var(--body-bg);
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles - Match dengan halaman lain */
+header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    font-size: 1.8rem;
+    background: rgba(255, 255, 255, 0.2);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-text h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.logo-text p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.back-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* Main Content */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    flex: 1;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h2 {
+    font-size: 1.8rem;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: var(--gray);
+    font-size: 1.1rem;
+}
+
+/* Device Info Card - Match dengan style halaman lain */
+.device-info {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--gray-light);
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    width: 150px;
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+
+.info-value {
+    flex: 1;
+    color: var(--dark);
+    font-weight: 500;
+}
+
+/* Code Preview Container */
+.code-container {
+    background-color: var(--code-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.code-header {
+    background-color: var(--code-header);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.code-header h3 {
+    color: var(--accent);
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.code-header h3 i {
+    color: var(--primary);
+}
+
+.copy-btn {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.copy-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+}
+
+.copy-btn.copied {
+    background: var(--success);
+}
+
+.copy-btn.copied:hover {
+    background: #2a9d8f;
+}
+
+.code-content {
+    padding: 1.5rem;
+    max-height: 600px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--code-header);
+}
+
+.code-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.code-content::-webkit-scrollbar-track {
+    background: var(--code-header);
+}
+
+.code-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--primary), var(--secondary));
+    border-radius: 4px;
+}
+
+/* Highlight.js Styling */
+.code-content pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Cascadia Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.code-content code {
+    font-family: inherit;
+    background: transparent !important;
+}
+
+/* Custom highlight.js theme adjustments untuk vibe ungu */
+.code-content .hljs {
+    background: transparent !important;
+}
+
+/* Override beberapa warna untuk tema ungu */
+.code-content .hljs-keyword,
+.code-content .hljs-selector-tag,
+.code-content .hljs-literal {
+    color: #c586c0 !important; /* Ungu muda */
+}
+
+.code-content .hljs-title,
+.code-content .hljs-section,
+.code-content .hljs-name {
+    color: #dcdcaa !important; /* Kuning */
+}
+
+.code-content .hljs-string,
+.code-content .hljs-meta .hljs-string {
+    color: #ce9178 !important; /* Oranye */
+}
+
+.code-content .hljs-comment {
+    color: #6a9955 !important; /* Hijau */
+    font-style: italic;
+}
+
+.code-content .hljs-number {
+    color: #b5cea8 !important; /* Hijau muda */
+}
+
+.code-content .hljs-preprocessor {
+    color: #9cdcfe !important; /* Biru muda */
+}
+
+.code-content .hljs-built_in,
+.code-content .hljs-type {
+    color: #4ec9b0 !important; /* Cyan */
+}
+
+.code-content .hljs-meta {
+    color: #569cd6 !important; /* Biru */
+}
+
+/* Button Styles - Match dengan halaman lain */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+    flex: 1;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+}
+
+.btn-secondary {
+    background: var(--gray-light);
+    color: var(--dark);
+}
+
+.btn-secondary:hover {
+    background: var(--gray);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #2a9d8f;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #e76f00;
+    transform: translateY(-2px);
+}
+
+/* Toast Notification - Match dengan halaman lain */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 400px;
+    backdrop-filter: blur(10px);
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast-success {
+    background: linear-gradient(135deg, var(--success), #2a9d8f);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, var(--danger), #c1121f);
+}
+
+.toast-info {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+    
+    .code-content {
+        padding: 1rem;
+    }
+    
+    .code-content pre {
+        font-size: 13px;
+    }
+    
+    .code-header {
+        padding: 0.8rem 1rem;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .code-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    header {
+        padding: 1rem 1.5rem;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .logo-text h1 {
+        font-size: 1.3rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    
+    .info-label {
+        width: 100%;
+        margin-bottom: 0.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .code-content {
+        padding: 0.8rem;
+    }
+    
+    .code-content pre {
+        font-size: 12px;
+    }
+    
+    .back-button {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .info-label {
+        font-size: 0.9rem;
+    }
+    
+    .info-value {
+        font-size: 0.9rem;
+    }
+}
+
+/* Status Badge untuk Device Info */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+}
+
+.status-online {
+    background: linear-gradient(135deg, var(--success), #2a9d8f);
+}
+
+.status-offline {
+    background: linear-gradient(135deg, var(--danger), #c1121f);
+}
+
+/* File Icon */
+.file-icon {
+    color: var(--accent);
+}
+
+/* ====================================
+   DESKTOP HEADER CONSISTENCY OVERRIDE
+   ==================================== */
+header {
+    background: rgba(67, 97, 238, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-container {
+    gap: 6px;
+}
+
+.logo {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.logo-text h1 {
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.logo-text p {
+    font-size: 0.65rem;
+}
+
+.back-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.device-info,
+.code-container {
+    border: 1px solid var(--gray-light);
+    box-shadow: 0 10px 24px rgba(20, 24, 40, 0.08);
+}

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - WiCan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #38b000;
+            --danger: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --body-bg: #f5f7fb;
+        }
+
+        body {
+            background: var(--body-bg);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+        }
+
+        .brand .logo-text h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .brand .logo-text p {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .tiny-btn {
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            border-radius: 999px;
+            padding: 7px 11px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .tiny-btn:hover {
+            background: rgba(255, 255, 255, 0.24);
+        }
+
+        main {
+            min-height: calc(100vh - 64px);
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 430px;
+            background: #fff;
+            border: 1px solid var(--gray-light);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            padding: 1.25rem;
+        }
+
+        .card h2 {
+            font-size: 1.35rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .hint {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .field {
+            margin-bottom: 0.9rem;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 0.35rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .field input {
+            width: 100%;
+            border: 1px solid #d7dbe3;
+            border-radius: 10px;
+            padding: 0.65rem 0.75rem;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            margin: 0.5rem 0 0.9rem;
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 0.72rem 0.9rem;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            min-height: 20px;
+            margin-top: 0.85rem;
+            font-size: 0.9rem;
+        }
+
+        .message.error {
+            color: var(--danger);
+        }
+
+        .message.ok {
+            color: var(--success);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(17, 24, 39, 0.55);
+            z-index: 999;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 460px;
+            background: #fff;
+            border-radius: 15px;
+            padding: 1rem;
+            border: 1px solid var(--gray-light);
+        }
+
+        .modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .modal-head h3 {
+            font-size: 1.06rem;
+        }
+
+        .close-btn {
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+    </style>
+    <link rel="icon" type="image/png" href="/WiCan-icon.png">
+<!-- HEADER CONSISTENCY OVERRIDE: DESKTOP -->
+    <style id="wic-header-consistency-desktop">
+        header {
+            background: rgba(67, 97, 238, 0.9) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14) !important;
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 120 !important;
+            border-radius: 18px !important;
+            width: calc(100% - 24px) !important;
+            margin: 10px auto 0 auto !important;
+        }
+        .logo-container,
+        .brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .logo-text h1,
+        .brand .logo-text h1 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        .logo-text p,
+        .brand .logo-text p {
+            font-size: 0.75rem !important;
+            opacity: 0.9 !important;
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <div class="logo" style="background:#111827;border:1px solid rgba(255,255,255,0.35);"><img src="/WiCan-icon.png" alt="WiCan" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+            <div class="logo-text">
+                <h1>WiCan</h1>
+                <p>Login Sistem</p>
+            </div>
+        </div>
+        <div></div>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Masuk Dashboard</h2>
+            <p class="hint">Masukkan username dan password Anda.</p>
+
+            <form id="loginForm">
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input id="username" name="username" autocomplete="username" required>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" name="password" autocomplete="current-password" required>
+                </div>
+                <label class="remember">
+                    <input type="checkbox" id="rememberMe">
+                    Ingat saya
+                </label>
+                <button id="loginBtn" class="btn" type="submit">Login</button>
+                <div id="loginMessage" class="message"></div>
+            </form>
+        </section>
+    </main>
+
+    <div id="setupModal" class="modal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3>Setup Awal Akun</h3>
+            </div>
+            <p class="hint">Belum ada akun. Buat username dan password baru untuk mulai menggunakan dashboard.</p>
+            <form id="setupForm">
+                <div class="field">
+                    <label for="setupUsername">Username baru</label>
+                    <input id="setupUsername" required>
+                </div>
+                <div class="field">
+                    <label for="setupPassword">Password baru</label>
+                    <input id="setupPassword" type="password" required>
+                </div>
+                <div class="field">
+                    <label for="setupConfirmPassword">Konfirmasi password baru</label>
+                    <input id="setupConfirmPassword" type="password" required>
+                </div>
+                <label class="remember">
+                    <input type="checkbox" id="setupRememberMe">
+                    Ingat saya di browser ini
+                </label>
+                <button id="setupBtn" class="btn" type="submit">Buat Akun</button>
+                <div id="setupMessage" class="message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        function showMessage(el, text, ok) {
+            el.textContent = text || '';
+            el.className = `message ${text ? (ok ? 'ok' : 'error') : ''}`;
+        }
+
+        function openModal(modal) {
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        async function postJson(url, payload) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                throw new Error(data.error || 'Request gagal');
+            }
+            return data;
+        }
+
+        async function initStatus() {
+            try {
+                const res = await fetch('/api/login/status');
+                const data = await res.json();
+
+                if (data.authenticated) {
+                    window.location.href = '/';
+                    return;
+                }
+
+                if (data.setupRequired) {
+                    openModal($('setupModal'));
+                }
+            } catch (error) {
+                showMessage($('loginMessage'), 'Gagal cek status login: ' + error.message, false);
+            }
+        }
+
+        $('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            showMessage($('loginMessage'), '', false);
+            $('loginBtn').disabled = true;
+
+            try {
+                await postJson('/api/login/signin', {
+                    username: $('username').value.trim(),
+                    password: $('password').value,
+                    rememberMe: $('rememberMe').checked
+                });
+                showMessage($('loginMessage'), 'Login berhasil, mengarahkan ke dashboard...', true);
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 500);
+            } catch (error) {
+                showMessage($('loginMessage'), error.message, false);
+            } finally {
+                $('loginBtn').disabled = false;
+            }
+        });
+
+        $('setupForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            showMessage($('setupMessage'), '', false);
+            $('setupBtn').disabled = true;
+
+            try {
+                await postJson('/api/login/setup', {
+                    username: $('setupUsername').value.trim(),
+                    password: $('setupPassword').value,
+                    confirmPassword: $('setupConfirmPassword').value,
+                    rememberMe: $('setupRememberMe').checked
+                });
+                showMessage($('setupMessage'), 'Akun berhasil dibuat. Mengarahkan ke dashboard...', true);
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 700);
+            } catch (error) {
+                showMessage($('setupMessage'), error.message, false);
+            } finally {
+                $('setupBtn').disabled = false;
+            }
+        });
+
+        initStatus();
+    </script>
+</body>
+</html>
