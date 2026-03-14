@@ -109,6 +109,7 @@ chmod +x /opt/wican-id/setup/*.sh 2>/dev/null || true
 
 mkdir -p /opt/wican-id/wican-id/service
 mkdir -p /opt/wican-id/wican-id/database
+mkdir -p /opt/wican-id/wican-id/mcu-tools/arduino-cli/.data
 
 cat >/usr/local/sbin/wican-id <<'EOF'
 #!/usr/bin/env bash

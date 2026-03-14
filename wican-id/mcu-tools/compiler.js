@@ -111,7 +111,20 @@ async function compileSketch() {
 
         // 4.1 Gunakan file status dependency untuk setup sekali di awal.
         let dependencyStatus = await loadOrInitCompilerList(compilerListPath);
-        if (!isCompilerListReady(dependencyStatus)) {
+        const coreReady = await isEsp8266CoreReady(cliDataDir);
+        const pythonReady = await isEsp8266PythonToolReady(cliDataDir);
+        const arduinoJsonReady = await isArduinoJsonReady(cliUserDir);
+        const dependenciesOk = isCompilerListReady(dependencyStatus) && coreReady && pythonReady && arduinoJsonReady;
+
+        if (!dependenciesOk) {
+            console.log(`[${new Date().toISOString()}] âš™ï¸  Dependency status not ready. Installing required compiler dependencies...`);
+            await ensureAllCompilerDependenciesInstalled(arduinoCliPath, cliExecOptions);
+            dependencyStatus = toAllOkCompilerList();
+            await saveCompilerList(compilerListPath, dependencyStatus);
+            console.log(`[${new Date().toISOString()}] âœ… compiler-list.properties updated to OK`);
+        }
+
+        if (false) {
             console.log(`[${new Date().toISOString()}] ⚙️  Dependency status NONE detected. Installing required compiler dependencies...`);
             await ensureAllCompilerDependenciesInstalled(arduinoCliPath, cliExecOptions);
             dependencyStatus = toAllOkCompilerList();
@@ -266,7 +279,6 @@ async function loadOrInitCompilerList(filePath) {
     try {
         await fs.access(filePath);
     } catch (error) {
-        await saveCompilerList(filePath, COMPILER_LIST_DEFAULT);
         return { ...COMPILER_LIST_DEFAULT };
     }
 
@@ -278,7 +290,6 @@ async function loadOrInitCompilerList(filePath) {
             ...parsed
         };
     } catch (error) {
-        await saveCompilerList(filePath, COMPILER_LIST_DEFAULT);
         return { ...COMPILER_LIST_DEFAULT };
     }
 }
@@ -337,6 +348,45 @@ async function ensureAllCompilerDependenciesInstalled(arduinoCliPath, execOption
         ['ArduinoJson.h', 'WiFiClient.h', 'ESP8266HTTPClient.h', 'ESP8266WiFi.h'],
         15 * 60 * 1000
     );
+}
+
+async function isEsp8266CoreReady(cliDataDir) {
+    try {
+        const coreDir = path.join(cliDataDir, 'packages', 'esp8266', 'hardware', 'esp8266');
+        const coreVersions = await fs.readdir(coreDir);
+        return coreVersions.length > 0;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function isEsp8266PythonToolReady(cliDataDir) {
+    try {
+        const toolsDir = path.join(cliDataDir, 'packages', 'esp8266', 'tools', 'python3');
+        const versions = await fs.readdir(toolsDir);
+        for (const version of versions) {
+            const pythonPath = path.join(toolsDir, version, 'python3');
+            try {
+                await fs.access(pythonPath, fsConstants.X_OK);
+                return true;
+            } catch (error) {
+                // keep checking other versions
+            }
+        }
+        return false;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function isArduinoJsonReady(cliUserDir) {
+    try {
+        const libDir = path.join(cliUserDir, 'libraries', 'ArduinoJson');
+        await fs.access(libDir);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 async function ensureEsp8266PlatformInstalled(arduinoCliPath, execOptions, timeoutMs = 60 * 60 * 1000) {
