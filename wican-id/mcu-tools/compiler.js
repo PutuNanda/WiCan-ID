@@ -13,7 +13,8 @@ const COMPILER_LIST_DEFAULT = {
     'ArduinoJson.h-Lib': 'NONE',
     'WiFiClient.h-Lib': 'NONE',
     'ESP8266HTTPClient.h-Lib': 'NONE',
-    'ESP8266WiFi.h-Lib': 'NONE'
+    'ESP8266WiFi.h-Lib': 'NONE',
+    'Final-Check': 'NONE' // <-- Tambahan state baru
 };
 const LIBRARIES_BY_HEADER = {
     'ArduinoJson.h': ['ArduinoJson'],
@@ -117,20 +118,25 @@ async function compileSketch() {
         const dependenciesOk = isCompilerListReady(dependencyStatus) && coreReady && pythonReady && arduinoJsonReady;
 
         if (!dependenciesOk) {
-            console.log(`[${new Date().toISOString()}] âš™ï¸  Dependency status not ready. Installing required compiler dependencies...`);
+            console.log(`[${new Date().toISOString()}] ⚙️  Dependency status not ready. Installing required compiler dependencies...`);
             await ensureAllCompilerDependenciesInstalled(arduinoCliPath, cliExecOptions);
+            
             dependencyStatus = toAllOkCompilerList();
+            dependencyStatus['Final-Check'] = 'NONE'; // Paksa NONE agar proses final check tetap berjalan di instalasi baru
             await saveCompilerList(compilerListPath, dependencyStatus);
-            console.log(`[${new Date().toISOString()}] âœ… compiler-list.properties updated to OK`);
+            console.log(`[${new Date().toISOString()}] ✅ Dependencies installed, proceeding to Final-Check...`);
         }
 
-        if (false) {
-            console.log(`[${new Date().toISOString()}] ⚙️  Dependency status NONE detected. Installing required compiler dependencies...`);
-            await ensureAllCompilerDependenciesInstalled(arduinoCliPath, cliExecOptions);
-            dependencyStatus = toAllOkCompilerList();
+        // --- MULAI TAMBAHAN LOGIKA FINAL CHECK ---
+        if (dependencyStatus['Final-Check'] !== 'OK') {
+            console.log(`[${new Date().toISOString()}] 🔍 Final-Check status is NONE. Running final check sequence...`);
+            await runFinalCheckSequence(arduinoCliPath, basePath, cliExecOptions);
+            
+            dependencyStatus['Final-Check'] = 'OK';
             await saveCompilerList(compilerListPath, dependencyStatus);
-            console.log(`[${new Date().toISOString()}] ✅ compiler-list.properties updated to OK`);
+            console.log(`[${new Date().toISOString()}] ✅ Final-Check updated to OK in compiler-list.properties`);
         }
+        // --- AKHIR TAMBAHAN LOGIKA FINAL CHECK ---
 
         // 5. Jalankan perintah kompilasi
         // Hindari -v default karena output terlalu besar dapat memicu maxBuffer error di Docker.
@@ -511,6 +517,37 @@ async function cleanupFiles(sketchSourcePath, outputDir) {
         console.log(`[${new Date().toISOString()}] ⚠️  Warning during cleanup:`, error.message);
     }
 }
+
+// --- FUNGSI BARU UNTUK MENJALANKAN FINAL CHECK ---
+async function runFinalCheckSequence(arduinoCliPath, basePath, execOptions) {
+    const cliDir = path.join(basePath, 'arduino-cli');
+    const dataDir = path.join(cliDir, '.data');
+    const stagingDir = path.join(cliDir, 'staging');
+
+    console.log(`[${new Date().toISOString()}] 🧹 Cleaning up .data and staging directories...`);
+    try {
+        // Menggunakan fs.rm bawaan Node.js sebagai pengganti 'sudo rm -rf'
+        await fs.rm(dataDir, { recursive: true, force: true });
+        await fs.rm(stagingDir, { recursive: true, force: true });
+        console.log(`[${new Date().toISOString()}] ✅ Cleanup completed.`);
+    } catch (err) {
+        console.log(`[${new Date().toISOString()}] ⚠️  Cleanup note: ${err.message}`);
+    }
+
+    console.log(`[${new Date().toISOString()}] ⚙️  Initializing arduino-cli config...`);
+    try {
+        await execAsync(`"${arduinoCliPath}" config init --overwrite`, execOptions);
+    } catch (err) {
+        console.log(`[${new Date().toISOString()}] ⚠️  Config init note:`, err.message);
+    }
+
+    console.log(`[${new Date().toISOString()}] ⬇️  Updating core index...`);
+    await execAsync(`"${arduinoCliPath}" core update-index --additional-urls "${ESP8266_INDEX_URL}"`, execOptions);
+
+    console.log(`[${new Date().toISOString()}] 📦 Installing esp8266 core...`);
+    await execAsync(`"${arduinoCliPath}" core install esp8266:esp8266 --additional-urls "${ESP8266_INDEX_URL}"`, execOptions);
+}
+// --------------------------------------------------
 
 // Jika file dijalankan langsung
 if (require.main === module) {
