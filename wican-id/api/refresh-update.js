@@ -38,7 +38,7 @@ async function handleRequest(req, res) {
 
         // Kirim Update-Now ke semua device secara paralel
         const results = await Promise.allSettled(
-            devices.map(device => sendUpdateNow(device, nodePort))
+            devices.map(device => sendUpdateNowBurst(device, nodePort))
         );
 
         // Format hasil
@@ -318,6 +318,47 @@ function sendUpdateNow(device, nodePort) {
         req.write(postData);
         req.end();
     });
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Kirim Update-Now burst: 10x cepat, jeda 500ms sebelum attempt ke-10
+async function sendUpdateNowBurst(device, nodePort) {
+    const attempts = 10;
+    const slowBeforeLastMs = 500;
+    const attemptResults = [];
+    const startTime = Date.now();
+
+    for (let i = 1; i <= attempts; i++) {
+        if (i === attempts) {
+            await sleep(slowBeforeLastMs);
+        }
+        try {
+            const result = await sendUpdateNow(device, nodePort);
+            attemptResults.push(result);
+        } catch (error) {
+            attemptResults.push({
+                success: false,
+                error: error.message || 'Unknown error',
+                statusCode: 0
+            });
+        }
+    }
+
+    const totalTime = Date.now() - startTime;
+    const successCount = attemptResults.filter(r => r && r.success).length;
+    const lastResult = attemptResults[attemptResults.length - 1] || {};
+
+    return {
+        success: successCount > 0,
+        deviceId: device.deviceId,
+        ipAddress: device.ipAddress,
+        statusCode: lastResult.statusCode || 0,
+        responseTime: totalTime,
+        message: `Burst done: ${successCount}/${attempts} ok`
+    };
 }
 
 // Fungsi untuk membersihkan semua timeout

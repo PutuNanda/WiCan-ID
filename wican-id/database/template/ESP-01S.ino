@@ -73,6 +73,21 @@ bool feedbackBlinking = false;
 const int FEEDBACK_BLINK_COUNT = 3;
 const unsigned long FEEDBACK_BLINK_DURATION = 500;
 
+// Update-Now sequencing (non-blocking orchestration)
+enum UpdateNowStep {
+  UPDATE_NOW_IDLE,
+  UPDATE_NOW_GET,
+  UPDATE_NOW_POST,
+  UPDATE_NOW_WAIT
+};
+UpdateNowStep updateNowStep = UPDATE_NOW_IDLE;
+volatile uint8_t updateNowQueue = 0;
+unsigned long updateNowLastActionTime = 0;
+const unsigned long UPDATE_NOW_STEP_DELAY = 10;
+const unsigned long UPDATE_NOW_WAIT_DELAY = 500;
+const uint8_t UPDATE_NOW_CYCLES = 10;
+uint8_t updateNowCyclesRemaining = 0;
+
 // Non-blocking boot blink pada STATUS_PIN
 bool statusPinReady = false;
 int bootBlinkTransitions = 0;
@@ -209,6 +224,8 @@ void loop() {
     wifiLedOn = false;
     startupRunningSent = false;
     lastStartupRunningAttempt = 0;
+    updateNowQueue = 0;
+    updateNowStep = UPDATE_NOW_IDLE;
     connectToWiFi();
   }
 
@@ -238,6 +255,8 @@ void loop() {
     }
 
     monitorGpio3(currentMillis);
+
+    processUpdateNow(currentMillis);
 
     if (pendingGpio3Update) {
       handleGpio3Update(currentMillis);
@@ -289,6 +308,7 @@ void monitorGpio3(unsigned long currentMillis) {
 // ============================================
 void handleGpio3Update(unsigned long currentMillis) {
   if (!pendingGpio3Update) return;
+  if (updateNowStep != UPDATE_NOW_IDLE || updateNowQueue > 0) return;
 
   ledActivity = true;
   ledActivityTime = currentMillis;
@@ -307,6 +327,65 @@ void handleGpio3Update(unsigned long currentMillis) {
 }
 
 // ============================================
+// FUNGSI UPDATE-NOW NON-BLOCKING (STEP-BY-STEP)
+// ============================================
+void captureGpio3Snapshot() {
+  lastStableGpio3RawState = digitalRead(STATUS_PIN);
+  updateDeviceStatus();
+}
+
+void processUpdateNow(unsigned long currentMillis) {
+  if (updateNowQueue == 0 && updateNowStep == UPDATE_NOW_IDLE) return;
+  if (!wifiConnected || WiFi.status() != WL_CONNECTED) {
+    updateNowQueue = 0;
+    updateNowStep = UPDATE_NOW_IDLE;
+    return;
+  }
+
+  unsigned long requiredDelay = (updateNowStep == UPDATE_NOW_WAIT)
+    ? UPDATE_NOW_WAIT_DELAY
+    : UPDATE_NOW_STEP_DELAY;
+  if (currentMillis - updateNowLastActionTime < requiredDelay) return;
+
+  if (updateNowStep == UPDATE_NOW_IDLE) {
+    if (updateNowQueue == 0) return;
+    updateNowQueue--;
+    updateNowCyclesRemaining = UPDATE_NOW_CYCLES;
+    updateNowStep = UPDATE_NOW_GET;
+  }
+
+  if (updateNowStep == UPDATE_NOW_GET) {
+    getRelayStateFromServer();
+    lastGetTime = currentMillis;
+    updateNowLastActionTime = currentMillis;
+    updateNowStep = UPDATE_NOW_POST;
+    return;
+  }
+
+  if (updateNowStep == UPDATE_NOW_POST) {
+    captureGpio3Snapshot();
+    postDataToServer();
+    lastPostTime = currentMillis;
+    updateNowLastActionTime = currentMillis;
+    if (updateNowCyclesRemaining > 0) {
+      updateNowCyclesRemaining--;
+    }
+    if (updateNowCyclesRemaining == 0) {
+      updateNowStep = UPDATE_NOW_IDLE;
+    } else {
+      updateNowStep = UPDATE_NOW_WAIT;
+    }
+    return;
+  }
+
+  if (updateNowStep == UPDATE_NOW_WAIT) {
+    updateNowLastActionTime = currentMillis;
+    updateNowStep = UPDATE_NOW_GET;
+    return;
+  }
+}
+
+// ============================================
 // FUNGSI KONEKSI WiFi
 // ============================================
 void connectToWiFi() {
@@ -322,6 +401,8 @@ void connectToWiFi() {
   feedbackBlinkCount = 0;
   startupRunningSent = false;
   lastStartupRunningAttempt = 0;
+  updateNowQueue = 0;
+  updateNowStep = UPDATE_NOW_IDLE;
   digitalWrite(LED_PIN, HIGH);
   lastBlinkTime = millis();
 }
@@ -605,8 +686,9 @@ void handleNodeServer() {
         client.print(response);
 
         if (wifiConnected) {
-          postDataToServer();
-          getRelayStateFromServer();
+          if (updateNowQueue < 5) {
+            updateNowQueue++;
+          }
         }
       } else if (request.indexOf("POST /server-feedback") != -1) {
         if (request.indexOf("server-side-good") != -1) {
